@@ -19,7 +19,7 @@ let majorityElement = function (nums) {
   })[0][0];
 };
 
-console.log(majorityElement([3, 2, 3, 2, 2, 3, 3]));
+// console.log(majorityElement([3, 2, 3, 2, 2, 3, 3]));
 /*
 Find pair of numbers that the sum equals K
 First in O(n2)
@@ -27,46 +27,96 @@ Sencond in O(n)
 */
 // find a + b = K
 const findPairSumOn2 = (K, arr) => {
-  console.time('on2');
-  let copyArr = [...arr];
+  console.time('O(n^2)');
+  // K = a + b
+  // edge cases
+  // numbers repeat
+  // greater than K
+  // same number ex. 8 + 8 = 16
   const outPairs = [];
+  const copyArr = [...arr];
   for (let i = 0; i < copyArr.length; i++) {
     const n1 = copyArr[i];
-    let pass = false;
-    for (let j = copyArr.length; j >= 0; j--) {
+    // Im going to start counting from i
+    let passed = false;
+    for (let j = i + 1; j < copyArr.length; j++) {
       const n2 = copyArr[j];
-      if (n1 + n2 === K && i !== j) {
-        // copyArr.splice(copyArr.indexOf(n1), 1);
-        // copyArr.splice(copyArr.indexOf(n2), 1);
-        outPairs.push([n1, n2]);
-        pass = true;
-        break;
+      if (n1 + n2 === K) {
+        // console.log(`\n> n1: ${n1} i: ${i}\n> n2: ${n2} j: ${j}`);
+        const remove = copyArr.indexOf(n2);
+        copyArr.splice(remove, 1);
+        passed = true;
+        if (n1 < n2) {
+          outPairs.push(`${n1}, ${n2}`);
+        } else {
+          outPairs.push(`${n2}, ${n1}`);
+        }
+      }
+      if (passed) {
+        const remove = copyArr.indexOf(n1);
+        copyArr.splice(0, remove);
       }
     }
-    if (pass) {
-      copyArr.splice(copyArr.indexOf(n1), 1);
+  }
+  console.log([...new Set(outPairs)]);
+  console.timeEnd('O(n^2)');
+};
+const findPairSumOnlogn2 = (K, arr) => {
+  console.time('O(n^2)');
+  // K = a + b
+  // edge cases
+  // numbers repeat
+  // greater than K
+  // same number ex. 8 + 8 = 16
+  const outPairs = [];
+  const copyArr = [...arr];
+  for (let i = 0; i < copyArr.length; i++) {
+    const n1 = copyArr[i];
+    // Im going to start counting from i
+    let passed = false;
+    for (let j = i + 1; j < copyArr.length; j++) {
+      const n2 = copyArr[j];
+      if (n1 + n2 === K) {
+        // console.log(`\n> n1: ${n1} i: ${i}\n> n2: ${n2} j: ${j}`);
+        const remove = copyArr.indexOf(n2);
+        copyArr.splice(remove, 1);
+        passed = true;
+        if (n1 < n2) {
+          outPairs.push(`${n1}, ${n2}`);
+        } else {
+          outPairs.push(`${n2}, ${n1}`);
+        }
+      }
+      if (passed) {
+        const remove = copyArr.indexOf(n1);
+        copyArr.splice(0, remove);
+      }
     }
   }
-  console.log(outPairs);
-  console.timeEnd('on2');
+  console.log([...new Set(outPairs)]);
+  console.timeEnd('O(n^2)');
 };
-
 // which is the same as a = K - b
 // whith this we can find the pair in O(n)
 const findPairSumOn = (K, arr) => {
-  console.time('on');
+  console.time('O(n)');
   const outPairs = [];
   const map = {};
   arr.forEach((n) => {
     let tmp = K - n;
-    if (tmp > 0 && map[tmp] == 1) {
-      outPairs.push([tmp, n]);
+    if (tmp > 0 && map[tmp]) {
+      if (tmp < n) {
+        outPairs.push(`${tmp}, ${n}`);
+      } else {
+        outPairs.push(`${n}, ${tmp}`);
+      }
     } else {
       map[n] = 1;
     }
   });
-  console.log(outPairs);
-  console.timeEnd('on');
+
+  console.log([...new Set(outPairs)]);
+  console.timeEnd('O(n)');
 };
 
 // Build array of random numbers
@@ -79,33 +129,12 @@ const buildArr = (n, max) => {
   return outArr;
 };
 
-const arr = [
-  21,
-  2,
-  7,
-  18,
-  23,
-  6,
-  28,
-  3,
-  4,
-  13,
-  12,
-  8,
-  23,
-  8,
-  24,
-  28,
-  24,
-  12,
-  18,
-  5,
-  14,
-];
-const builtArr = buildArr(20, 30);
-console.log(builtArr);
-findPairSumOn2(16, builtArr);
-findPairSumOn(16, builtArr);
+const arr = [13, 3, 13, 8, 8, 3, 3];
+const builtArr = buildArr(10000, 50);
+const passedArr = builtArr;
+console.log(passedArr);
+findPairSumOn2(16, passedArr);
+findPairSumOn(16, passedArr);
 
 // findPairSumOn(16, arr);
 // // result: 6, 10 & 7, 9
